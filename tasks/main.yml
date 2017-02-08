@@ -1,0 +1,40 @@
+---
+# tasks file for ansible-role-ubuntu-macbook-air-6-1.
+
+# Fix brightness issues.
+#
+# @see https://help.ubuntu.com/community/MacBookAir6-2/Wily#Backlight
+- name: Check installed modules.
+  command: lsmod
+  register: installed_modules
+
+- name: Install "build-essential".
+  apt:
+    name: build-essential
+    state: present
+  when: installed_modules.stdout.find(kernel_name) == -1
+
+- name: Install "linux-headers-generic".
+  apt:
+    name: linux-headers-generic
+    state: present
+  when: installed_modules.stdout.find(kernel_name) == -1
+
+- name: Copy new kernel module to tmp directory.
+  copy:
+    src: "files/{{ kernel_file_name }}"
+    dest: "/tmp/{{ kernel_file_name }}"
+  when: installed_modules.stdout.find(kernel_name) == -1
+
+- name: Install new kernel module to fix brightness issues.
+  shell: "dpkg -i {{ kernel_file_name }}"
+  when: installed_modules.stdout.find(kernel_name) == -1
+
+- name: Enable new kernel module.
+  shell: "modprobe {{ kernel_name }}"
+  when: installed_modules.stdout.find(kernel_name) == -1
+
+# Implement Powertop recommendations.
+- name: Execute Powertop suggested commands.
+  shell: "{{ item }}"
+  with_items: "{{ powertop_commands }}"

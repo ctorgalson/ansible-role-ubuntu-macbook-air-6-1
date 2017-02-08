@@ -1,0 +1,7 @@
+---
+# defaults file for ansible-role-ubuntu-hardware-fix
+kernel_name: mba6x_bl
+kernel_file_name: mba6xbl-dkms_1.0.0_all.deb
+powertop_commands:
+  - "echo '1500' > '/proc/sys/vm/dirty_writeback_centisecs';"
+  - "echo 'auto' > '/sys/bus/usb/devices/1-5/power/control';"
