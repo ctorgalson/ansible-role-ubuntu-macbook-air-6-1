@@ -22,7 +22,7 @@
 
 - name: Copy new kernel module to tmp directory.
   copy:
-    src: "files/{{ kernel_file_name }}"
+    src: "{{ kernel_file_name }}"
     dest: "/tmp/{{ kernel_file_name }}"
   when: installed_modules.stdout.find(kernel_name) == -1
 
