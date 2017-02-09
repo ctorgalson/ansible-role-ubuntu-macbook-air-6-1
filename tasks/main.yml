@@ -22,12 +22,12 @@
 
 - name: Copy new kernel module to tmp directory.
   copy:
-    src: "{{ kernel_file_name }}"
+    src: "{{ role_path }}/files/{{ kernel_file_name }}"
     dest: "/tmp/{{ kernel_file_name }}"
   when: installed_modules.stdout.find(kernel_name) == -1
 
 - name: Install new kernel module to fix brightness issues.
-  shell: "dpkg -i {{ kernel_file_name }}"
+  shell: "dpkg -i /tmp/{{ kernel_file_name }}"
   when: installed_modules.stdout.find(kernel_name) == -1
 
 - name: Enable new kernel module.
